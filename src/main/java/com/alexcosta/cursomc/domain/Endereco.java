@@ -26,7 +26,7 @@ public class Endereco implements Serializable{
 	private String bairro;
 	private String cep;
 	
-	@JsonBackReference			// omite o cliente na serialização dos endereços para que o json não entre em loop
+	@JsonBackReference			// não permite a serialização do cliente (para que o json não entre em loop)
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
