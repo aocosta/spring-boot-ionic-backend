@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,10 @@ public class Cliente implements Serializable{
 	private Integer id;
 	
 	private String nome;
+	
+	@Column(unique = true)	// indica que não haverá dois emails iguais no banco
 	private String email;
+	
 	private String cpfOuCnpj;
 	private Integer tipo;
 	
