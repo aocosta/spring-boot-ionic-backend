@@ -57,8 +57,8 @@ public class CategoriaResources {
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
 		
 		Page<Categoria> categorias = service.findPage(page, linesPerPage, orderBy, direction);
-		Page<CategoriaDTO> categoriasDto = categorias.map(obj -> new CategoriaDTO(obj));
-		return ResponseEntity.ok().body(categoriasDto);
+		Page<CategoriaDTO> categoriaDto = categorias.map(obj -> new CategoriaDTO(obj));
+		return ResponseEntity.ok().body(categoriaDto);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
