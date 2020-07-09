@@ -37,6 +37,10 @@ public class PedidoService {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	// Injeta o componente @Bean emailService da classe de configuração (TestConfig ou DevConfig)
+	@Autowired
+	private EmailService emailService;
 
 	public Pedido find(Integer id) {
 		Optional<Pedido> obj = repository.findById(id);
@@ -75,7 +79,8 @@ public class PedidoService {
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
 		
-		System.out.println(pedido.toString());
+		// System.out.println(pedido.toString());
+		emailService.sendOrderConfirmationEmail(pedido);
 		
 		return pedido;
 	}
