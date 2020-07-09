@@ -27,13 +27,16 @@ public class PedidoService {
 	private BoletoService boletoService;
 	
 	@Autowired
-	PagamentoRepository pagamentoRepository;
+	private PagamentoRepository pagamentoRepository;
 	
 	@Autowired
-	ProdutoService produtoService;
+	private ProdutoService produtoService;
 	
 	@Autowired
-	ItemPedidoRepository itemPedidoRepository;
+	private ItemPedidoRepository itemPedidoRepository;
+	
+	@Autowired
+	private ClienteService clienteService;
 
 	public Pedido find(Integer id) {
 		Optional<Pedido> obj = repository.findById(id);
@@ -47,6 +50,9 @@ public class PedidoService {
 		pedido.setId(null);
 		pedido.setInstante(new Date());
 
+		// Precisa popular o objeto cliente para ter o nome dele no serviço de email
+		pedido.setCliente(clienteService.find(pedido.getCliente().getId()));
+
 		Pagamento pagamento = pedido.getPagamento();
 		pagamento.setPedido(pedido);
 		pagamento.setEstado(EstadoPagamento.PENDENTE);
@@ -59,11 +65,17 @@ public class PedidoService {
 		
 		for (ItemPedido ip : pedido.getItens()) {
 			ip.setDesconto(0.0);
-			ip.setPreco(produtoService.find(ip.getProduto().getId()).getPreco());
+
+			// Precisa popular o objeto produto para ter o nome dele no serviço de email
+			ip.setProduto(produtoService.find(ip.getProduto().getId()));
+			
+			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(pedido);
 		}
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
+		
+		System.out.println(pedido.toString());
 		
 		return pedido;
 	}
