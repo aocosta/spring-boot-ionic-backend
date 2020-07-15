@@ -24,9 +24,12 @@ public class DevConfig {
 	
 	@Bean
 	public boolean instantiateDatabase() throws ParseException {
+		
+		/*
 		if (!"create".equals(strategy)) {
 			return false;
 		}
+		*/
 		
 		dbService.instatiateTestDatabase();
 		return true;
