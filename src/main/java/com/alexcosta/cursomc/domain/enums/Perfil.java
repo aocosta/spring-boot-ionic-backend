@@ -2,6 +2,7 @@ package com.alexcosta.cursomc.domain.enums;
 
 public enum Perfil {
 	
+	// A palavra ROLE é exigência do Spring Security
 	ADMIN(1, "ROLE_ADMIN"),
 	CLIENTE(2, "ROLE_CLIENTE");
 

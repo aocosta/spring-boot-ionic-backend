@@ -29,7 +29,7 @@ public abstract class Pagamento implements Serializable {
 	@JsonIgnore					// será ignorado pelo json na serialização (para não haver referência cíclica)
 	@OneToOne
 	@JoinColumn(name = "pedido_id")
-	@MapsId						// informa que id dessa entidade será o mesmo do Pedido
+	@MapsId						// informa que o id dessa entidade será o mesmo do Pedido
 	private Pedido pedido;
 	
 	public Pagamento() {}

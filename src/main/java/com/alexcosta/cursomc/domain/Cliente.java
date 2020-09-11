@@ -42,6 +42,7 @@ public class Cliente implements Serializable{
 	@JsonIgnore
 	private String senha;
 	
+	// @JsonManagedReference	// substituido pelo @JsonIgnore na classe Endereço
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 	
@@ -49,7 +50,7 @@ public class Cliente implements Serializable{
 	@CollectionTable(name = "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
 	
-	@ElementCollection(fetch=FetchType.EAGER)
+	@ElementCollection(fetch=FetchType.EAGER)	// garante que os perfis também serão recuperados junto com o cliente
 	@CollectionTable(name = "PERFIS")
 	private Set<Integer> perfis = new HashSet<>();
 	

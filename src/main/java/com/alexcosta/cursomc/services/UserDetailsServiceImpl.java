@@ -20,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Cliente cliente = repository.findByEmail(email);
 		if (cliente == null) {
+			// Exceção do Spring Security
 			throw new UsernameNotFoundException(email);
 		}
 		

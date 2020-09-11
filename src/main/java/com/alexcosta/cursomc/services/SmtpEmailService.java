@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 public class SmtpEmailService extends AbstractEmailService{
 	
+	// Já cria a instância com todos os dados de smtp informados no application-xxx.properties
 	@Autowired
 	private MailSender mailSender;
 	

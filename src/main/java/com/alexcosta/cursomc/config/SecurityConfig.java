@@ -19,13 +19,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.alexcosta.cursomc.security.JWTAuthenticationFilter;
+import com.alexcosta.cursomc.security.JWTAuthorizationFilter;
 import com.alexcosta.cursomc.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	// Injeta a implementação ao invés da interface
+	// O Spring injeta a implementação ao invés da interface
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
@@ -39,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
 	
+	// Configura o que pode ser acessado pelo HTTP
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
@@ -47,19 +49,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			http.headers().frameOptions().disable();
 		}
 		
+		// Libera o acesso a aplicação por múltiplas fontes (ambiente de teste, aplicações front-end, etc...)
+		// e desabilita proteção de ataque CSRF em sistemas stateless
 		http.cors().and().csrf().disable();
+		
+		/*
+		 *  Permite acesso aos métodos GET para todos os endpoints informados nos vetores PUBLIC_MATCHERS_GET,
+		 *  Permite acesso para todos os endpoints informados nos vetores PUBLIC_MATCHERS,
+		 *  Para todo o resto exige autenticação
+		*/
 		http.authorizeRequests().
 			antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll().
-			antMatchers(PUBLIC_MATCHERS).permitAll().anyRequest().authenticated();
+			antMatchers(PUBLIC_MATCHERS).permitAll().
+			anyRequest().authenticated();
+		
+		// Registra permissão para os filtros de autenticação e autorização
 		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
+		
+		// Não permite criação de seção de usuário
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
+	// Informa para o Spring Security quem é o Serviço de Usuário e o método de encriptar senha
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
 	}
 	
+	// Configuração para acesso a aplicação por múltiplas fontes (ambiente de teste, aplicações front-end, etc...)
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -67,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return source;
 	}
 	
+	// Método para encriptar senhas
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();

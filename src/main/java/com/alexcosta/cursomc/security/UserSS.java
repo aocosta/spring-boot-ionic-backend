@@ -26,6 +26,8 @@ public class UserSS implements UserDetails {
 		this.id = id;
 		this.email = email;
 		this.senha = senha;
+
+		// Muda o tipo da coleção de perfis do usuário (da classe Cliente) para o tipo GrantedAuthority exigido pelo Spring Security 
 		this.authorities = perfis.stream().map(x -> new SimpleGrantedAuthority(x.getDescricao())).collect(Collectors.toList());
 	}
 
