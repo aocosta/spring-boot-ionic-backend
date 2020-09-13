@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,6 +25,7 @@ import com.alexcosta.cursomc.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)	// permite autorização para perfis específicos
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	// O Spring injeta a implementação ao invés da interface
@@ -39,7 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final String[] PUBLIC_MATCHERS = { "/h2-console/**" };
 
 	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
-	
+
+	private static final String[] PUBLIC_MATCHERS_POST = { "/clientes/**" };
+
 	// Configura o que pode ser acessado pelo HTTP
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -55,11 +59,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		/*
 		 *  Permite acesso aos métodos GET para todos os endpoints informados nos vetores PUBLIC_MATCHERS_GET,
+		 *  Permite acesso a método POST para todos os endpoints informados nos vetores PUBLIC_MATCHERS_POST,
 		 *  Permite acesso para todos os endpoints informados nos vetores PUBLIC_MATCHERS,
 		 *  Para todo o resto exige autenticação
 		*/
 		http.authorizeRequests().
 			antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll().
+			antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll().
 			antMatchers(PUBLIC_MATCHERS).permitAll().
 			anyRequest().authenticated();
 		

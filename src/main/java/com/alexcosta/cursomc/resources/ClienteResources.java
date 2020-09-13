@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,8 @@ public class ClienteResources {
 		Cliente cliente = service.find(id);
 		return ResponseEntity.ok().body(cliente);
 	}
-	
+
+	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<ClienteDTO>> findAll() {
 		List<Cliente> clientes = service.findAll();
@@ -42,6 +44,7 @@ public class ClienteResources {
 		return ResponseEntity.ok().body(clientesDto);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
 	public ResponseEntity<Page<ClienteDTO>> findPage(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -72,6 +75,7 @@ public class ClienteResources {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);

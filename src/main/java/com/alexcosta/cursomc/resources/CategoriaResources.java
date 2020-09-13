@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +62,7 @@ public class CategoriaResources {
 		return ResponseEntity.ok().body(categoriaDto);
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO categoriaDto) {
 		Categoria categoria = service.insert(service.fromDTO(categoriaDto));
@@ -71,6 +73,7 @@ public class CategoriaResources {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO categoriaDto, @PathVariable Integer id) {
 		Categoria categoria = service.fromDTO(categoriaDto);
@@ -79,6 +82,7 @@ public class CategoriaResources {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
