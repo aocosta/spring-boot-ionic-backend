@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alexcosta.cursomc.domain.Cliente;
 import com.alexcosta.cursomc.domain.ItemPedido;
 import com.alexcosta.cursomc.domain.Pagamento;
 import com.alexcosta.cursomc.domain.PagamentoComBoleto;
@@ -15,6 +19,8 @@ import com.alexcosta.cursomc.domain.enums.EstadoPagamento;
 import com.alexcosta.cursomc.repositories.ItemPedidoRepository;
 import com.alexcosta.cursomc.repositories.PagamentoRepository;
 import com.alexcosta.cursomc.repositories.PedidoRepository;
+import com.alexcosta.cursomc.security.UserSS;
+import com.alexcosta.cursomc.services.exceptions.AuthorizationException;
 import com.alexcosta.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -84,6 +90,26 @@ public class PedidoService {
 		emailService.sendOrderConfirmationHtmlEmail(pedido);
 		
 		return pedido;
+	}
+	
+	// Método de busca de pedidos de um cliente de forma paginada
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		// Obtem o usuário logado
+		UserSS user = UserService.authenticated();
+		
+		// Se não achou nenhum usuário logado
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		// Cria objeto de paginação
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		
+		// Obtem o cliente
+		Cliente cliente =  clienteService.find(user.getId());
+		
+		// Retorna busca paginada
+		return repository.findByCliente(cliente, pageRequest);
 	}
 
 }

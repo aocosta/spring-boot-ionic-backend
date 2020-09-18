@@ -10,6 +10,6 @@ import com.alexcosta.cursomc.domain.Cliente;
 public interface ClienteRepository extends JpaRepository<Cliente, Integer>{
 	
 	// Não precisa implementar o método. O Spring detecta automáticamente a busca por email
-	@Transactional(readOnly = true)		// Não precisa de transação de banco (lock) - pra ficar mais rápido
+	@Transactional(readOnly = true)		// Sem transação de banco (lock) pra ficar mais rápido
 	Cliente findByEmail(String email);
 }
