@@ -1,5 +1,6 @@
 package com.alexcosta.cursomc.services;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alexcosta.cursomc.domain.Cidade;
 import com.alexcosta.cursomc.domain.Cliente;
@@ -40,6 +42,9 @@ public class ClienteService {
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	S3Service s3Service;
 	
 	public Cliente find(Integer id) {
 		
@@ -117,6 +122,10 @@ public class ClienteService {
 	private void updateData(Cliente cliente, Cliente updateCliente) {
 		cliente.setNome(updateCliente.getNome());
 		cliente.setEmail(updateCliente.getEmail());
+	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return s3Service.uploadFile(multipartFile);
 	}
 
 }

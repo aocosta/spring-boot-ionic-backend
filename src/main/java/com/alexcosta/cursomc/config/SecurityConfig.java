@@ -42,8 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
 
-	private static final String[] PUBLIC_MATCHERS_POST = { "/clientes/**", "/auth/forgot/**" };
-
+	// private static final String[] PUBLIC_MATCHERS_POST = { "/clientes/**", "/auth/forgot/**" };
+	
+	// Libera provisoriamente o endpoint de clientes para testes de upload de arquivos para o s3
+	private static final String[] PUBLIC_MATCHERS_POST = { "/clientes", "/clientes/picture", "/auth/forgot/**" };
+	
 	// Configura o que pode ser acessado pelo HTTP
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
