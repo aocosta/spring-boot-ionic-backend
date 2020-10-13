@@ -39,6 +39,9 @@ public class AuthResource {
 		// Seta o valor do token na variável Authorization do Header
 		response.addHeader("Authorization", "Bearer " + token);
 		
+		// Expõe a autorização
+		response.addHeader("access-control-expose-headers", "Authorization");
+		
 		// Retorna código de status 204
 		return ResponseEntity.noContent().build();
 	}
