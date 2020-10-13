@@ -1,5 +1,6 @@
 package com.alexcosta.cursomc.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +46,13 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 	
 	@Autowired
-	S3Service s3Service;
+	private S3Service s3Service;
+	
+	@Autowired
+	private ImageService imageService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
 	
 	public Cliente find(Integer id) {
 		
@@ -132,6 +140,7 @@ public class ClienteService {
 			throw new AuthorizationException("Acesso negado");
 		}
 		
+		/* Provisório para a aula 88
 		// Realiza o upload da imagem para o S3
 		URI uri = s3Service.uploadFile(multipartFile);
 		
@@ -142,6 +151,17 @@ public class ClienteService {
 		repository.save(cliente);
 		
 		return uri;
+		*/
+
+		// Transforma o arquivo em jpg
+		BufferedImage jpgImgage = imageService.getJpgImageFromFile(multipartFile);
+		
+		// Cria o nome padrão do arquivo
+		String fileName = prefix + user.getId() + ".jpg";
+		
+		// Realiza o upload da imagem para o S3
+		return s3Service.uploadFile(imageService.getInputStream(jpgImgage, "jpg"), fileName, "image");
+	
 	}
 
 }
