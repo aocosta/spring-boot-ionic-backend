@@ -72,6 +72,25 @@ public class ClienteService {
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
 	
+	public Cliente findByEmail(String email) {
+		
+		// Obtem o usuário logado
+		UserSS user = UserService.authenticated();
+		
+		// Se o usuário não tem perfil de ADMIN e não é o mesmo que está logado
+		if (user == null || !user.hasHole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		Cliente obj = repository.findByEmail(email);
+		if (obj == null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! Usuário: " + user.getUsername() + ", Tipo: " + Cliente.class.getName());
+		}
+		return obj;
+		
+	}
+	
 	public List<Cliente> findAll() {
 		List<Cliente> clientes = repository.findAll();
 		return clientes;

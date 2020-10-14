@@ -31,12 +31,18 @@ public class ClienteResources {
 	@Autowired
 	private ClienteService service;
 	
-	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
 		Cliente cliente = service.find(id);
 		return ResponseEntity.ok().body(cliente);
 	}
 
+	@RequestMapping(value = "/email", method = RequestMethod.GET)
+	public ResponseEntity<Cliente> find(@RequestParam(value="value") String email) {
+		Cliente cliente = service.findByEmail(email);
+		return ResponseEntity.ok().body(cliente);
+	}
+	
 	@PreAuthorize("hasAnyRole('ADMIN')")	// Operação permitida apenas para pefis ADMIN
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<ClienteDTO>> findAll() {
