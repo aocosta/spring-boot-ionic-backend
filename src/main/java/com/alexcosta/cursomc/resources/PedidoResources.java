@@ -48,7 +48,7 @@ public class PedidoResources {
 		pedido = service.insert(pedido);
 		
 		// Cria a url de retorno com o código do novo objeto criado
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(pedido.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId()).toUri();
 		
 		return ResponseEntity.created(uri).build();
 	}
